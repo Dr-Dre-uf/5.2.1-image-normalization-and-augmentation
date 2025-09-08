@@ -4,6 +4,9 @@ from skimage import transform
 import random
 from PIL import Image
 
+# Instruction to adjust parameters in the sidebar
+st.write("Adjust image processing parameters in the sidebar on the left to see the effects.")
+
 # Sidebar controls with tooltips
 st.sidebar.header("Image Processing Parameters")
 image_source = st.sidebar.radio(
