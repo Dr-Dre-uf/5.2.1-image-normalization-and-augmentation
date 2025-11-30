@@ -30,7 +30,11 @@ app_mode = st.sidebar.radio(
 BF_PATH = "assets/BloodSmear.png"
 IF_PATH = "assets/IFCells.jpg"
 
+# ==============================
+
 # Helper function to load images
+
+# ==============================
 
 def load_image(uploaded_file=None, choice=None):
 if uploaded_file is not None:
@@ -63,7 +67,6 @@ rotation_angle = st.sidebar.slider("Rotation Angle (degrees)", -30.0, 30.0, 0.0)
 flip_horizontal = st.sidebar.checkbox("Flip Horizontal")
 flip_vertical = st.sidebar.checkbox("Flip Vertical")
 
-# Load image
 uploaded_file = None
 if image_source == "Upload Image":
     uploaded_file = st.sidebar.file_uploader("Upload an image", type=["jpg", "png"])
