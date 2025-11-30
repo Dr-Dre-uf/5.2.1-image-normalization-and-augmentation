@@ -4,7 +4,6 @@ from PIL import Image
 from skimage import transform, img_as_ubyte
 from skimage.util import random_noise
 import cv2
-import os
 
 # ==============================
 
