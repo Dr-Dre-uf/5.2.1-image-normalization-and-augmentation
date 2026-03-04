@@ -6,11 +6,19 @@ from skimage.util import random_noise
 import cv2
 
 # ==============================
-# App Setup
+# App Setup & Global Warnings
 # ==============================
 st.set_page_config(page_title="Image Processing Suite", layout="wide")
 
 st.sidebar.title("Image Processing Suite")
+
+# Data Privacy Warning
+st.sidebar.warning(
+    "⚠️ **Privacy Notice:**\n\n"
+    "This is an educational sandbox. Please **do not upload sensitive clinical data**, "
+    "personally identifiable information (PII), or Protected Health Information (PHI)."
+)
+
 app_mode = st.sidebar.radio(
     "Select App",
     [
@@ -18,7 +26,8 @@ app_mode = st.sidebar.radio(
         "Edge Detection",
         "Motion Blur Simulation",
         "Salt & Pepper Noise & Denoising"
-    ]
+    ],
+    help="Navigate between different image preprocessing modules."
 )
 
 # Default image paths
@@ -43,21 +52,32 @@ def load_image(uploaded_file=None, choice=None):
 # ==============================
 if app_mode == "Image Processing & Augmentation":
     st.title("Image Processing & Augmentation")
+    st.info("**Instructions:** Adjust the sliders to scale pixel intensities (normalization) or apply spatial transformations (augmentation). These techniques help standardize data and improve the robustness of machine learning models.")
 
     st.sidebar.header("Image Source")
     image_source = st.sidebar.radio(
         "Select Image Source:",
-        ("Fluorescence (IF)", "Brightfield (BF)", "Upload Image")
+        ("Fluorescence (IF)", "Brightfield (BF)", "Upload Image"),
+        help="Choose a sample medical image or upload your own safe, non-sensitive image."
     )
 
-    normalization_factor = st.sidebar.slider("Normalization Factor", 0.0, 1.0, 1.0)
-    rotation_angle = st.sidebar.slider("Rotation Angle (degrees)", -30.0, 30.0, 0.0)
-    flip_horizontal = st.sidebar.checkbox("Flip Horizontal")
-    flip_vertical = st.sidebar.checkbox("Flip Vertical")
+    normalization_factor = st.sidebar.slider(
+        "Normalization Factor", 0.0, 1.0, 1.0,
+        help="Scales the pixel intensities. 1.0 represents the original brightness, while lower values darken the image."
+    )
+    rotation_angle = st.sidebar.slider(
+        "Rotation Angle (degrees)", -30.0, 30.0, 0.0,
+        help="Rotates the image to simulate different slide orientations."
+    )
+    flip_horizontal = st.sidebar.checkbox("Flip Horizontal", help="Mirrors the image left-to-right.")
+    flip_vertical = st.sidebar.checkbox("Flip Vertical", help="Mirrors the image top-to-bottom.")
 
     uploaded_file = None
     if image_source == "Upload Image":
-        uploaded_file = st.sidebar.file_uploader("Upload an image", type=["jpg", "png"])
+        uploaded_file = st.sidebar.file_uploader(
+            "Upload an image", type=["jpg", "png"],
+            help="Supported formats: JPG, PNG. Remember: No sensitive data!"
+        )
         if uploaded_file is None:
             st.warning("Please upload an image.")
             st.stop()
@@ -87,19 +107,29 @@ if app_mode == "Image Processing & Augmentation":
 # ==============================
 elif app_mode == "Edge Detection":
     st.title("Edge Detection with Filters")
+    st.info("**Instructions:** Apply spatial filters to extract structural features like cell walls. Adjust the filter strengths to see how directional kernels (horizontal/vertical) and magnitude calculations (Sobel) highlight different boundaries.")
 
     st.sidebar.header("Image Selection")
-    use_uploaded = st.sidebar.checkbox("Upload your own image")
+    use_uploaded = st.sidebar.checkbox("Upload your own image", help="Check this to test edge detection on a custom image.")
     uploaded_file = None
     if use_uploaded:
-        uploaded_file = st.sidebar.file_uploader("Upload Image", type=["jpg","png"])
+        uploaded_file = st.sidebar.file_uploader("Upload Image", type=["jpg","png"], help="No sensitive data please.")
     else:
         image_choice = st.sidebar.selectbox("Select Default Image", ["Fluorescence (IFCells)", "Brightfield (BloodSmear)"])
 
     st.sidebar.header("Filter Settings")
-    horiz_strength = st.sidebar.slider("Horizontal Filter Strength", 0.5, 5.0, 1.0)
-    vert_strength = st.sidebar.slider("Vertical Filter Strength", 0.5, 5.0, 1.0)
-    sobel_strength = st.sidebar.slider("Sobel Filter Strength", 0.5, 5.0, 1.0)
+    horiz_strength = st.sidebar.slider(
+        "Horizontal Filter Strength", 0.5, 5.0, 1.0,
+        help="Multiplies the horizontal edge kernel values to enhance horizontal boundaries."
+    )
+    vert_strength = st.sidebar.slider(
+        "Vertical Filter Strength", 0.5, 5.0, 1.0,
+        help="Multiplies the vertical edge kernel values to enhance vertical boundaries."
+    )
+    sobel_strength = st.sidebar.slider(
+        "Sobel Filter Strength", 0.5, 5.0, 1.0,
+        help="Increases the intensity of the final Sobel edge magnitude calculation."
+    )
 
     # Load image
     img = load_image(uploaded_file, image_choice if not use_uploaded else None)
@@ -142,17 +172,25 @@ elif app_mode == "Edge Detection":
 # ==============================
 elif app_mode == "Motion Blur Simulation":
     st.title("Motion Blur Simulation")
+    st.info("**Instructions:** Use this tool to simulate imaging artifacts caused by camera shake or stage movement. Adjust the length to increase the severity of the blur and the angle to change its direction.")
+    
     st.sidebar.header("Image Selection")
-    use_uploaded = st.sidebar.checkbox("Upload your own image")
+    use_uploaded = st.sidebar.checkbox("Upload your own image", help="Test blur effects on custom data.")
     uploaded_file = None
     if use_uploaded:
-        uploaded_file = st.sidebar.file_uploader("Upload Image", type=["jpg","png"])
+        uploaded_file = st.sidebar.file_uploader("Upload Image", type=["jpg","png"], help="No sensitive data please.")
     else:
         image_choice = st.sidebar.selectbox("Select Example Image", ["Fluorescence (IFCells)", "Brightfield (BloodSmear)"])
 
     st.sidebar.header("Motion Blur Settings")
-    blur_length = st.sidebar.slider("Blur Length", 3, 50, 20)
-    blur_angle = st.sidebar.slider("Blur Angle (degrees)", 0, 180, 45)
+    blur_length = st.sidebar.slider(
+        "Blur Length", 3, 50, 20,
+        help="Determines the size of the blur kernel. A higher number mimics a faster or longer movement."
+    )
+    blur_angle = st.sidebar.slider(
+        "Blur Angle (degrees)", 0, 180, 45,
+        help="Changes the directional trajectory of the simulated motion blur."
+    )
 
     img = load_image(uploaded_file, image_choice if not use_uploaded else None)
     if img is not None:
@@ -174,23 +212,36 @@ elif app_mode == "Motion Blur Simulation":
 # ==============================
 elif app_mode == "Salt & Pepper Noise & Denoising":
     st.title("Salt & Pepper Noise and Denoising")
+    st.info("**Instructions:** Introduce random sensor noise (Salt & Pepper) and attempt to clean it up using different filtering algorithms. Observe how the Median filter compares to Gaussian blur when preserving edges.")
 
     st.sidebar.header("Image Selection")
-    use_uploaded = st.sidebar.checkbox("Upload your own image")
+    use_uploaded = st.sidebar.checkbox("Upload your own image", help="Test noise and denoising on your own image.")
     uploaded_file = None
     if use_uploaded:
-        uploaded_file = st.sidebar.file_uploader("Upload Image", type=["jpg","png"])
+        uploaded_file = st.sidebar.file_uploader("Upload Image", type=["jpg","png"], help="No sensitive data please.")
     else:
         image_choice = st.sidebar.selectbox("Select Example Image", ["Fluorescence (IFCells)", "Brightfield (BloodSmear)"])
 
     st.sidebar.header("Noise Settings")
-    noise_amount = st.sidebar.slider("Noise Amount", 0.0, 0.2, 0.05)
+    noise_amount = st.sidebar.slider(
+        "Noise Amount", 0.0, 0.2, 0.05,
+        help="The proportion of image pixels to randomly replace with pure black (pepper) or pure white (salt)."
+    )
     st.sidebar.header("Denoising Filter")
-    filter_type = st.sidebar.radio("Filter Type", ["Median", "Gaussian"])
+    filter_type = st.sidebar.radio(
+        "Filter Type", ["Median", "Gaussian"],
+        help="Median filtering is generally better for Salt & Pepper noise as it preserves edges, whereas Gaussian blur softens the entire image."
+    )
     if filter_type == "Median":
-        filter_strength = st.sidebar.slider("Kernel Size (odd only)", 3, 11, 3, step=2)
+        filter_strength = st.sidebar.slider(
+            "Kernel Size (odd only)", 3, 11, 3, step=2,
+            help="The size of the window used to calculate the median pixel value. Larger values remove more noise but blur details."
+        )
     else:
-        filter_strength = st.sidebar.slider("Gaussian Sigma", 0.5, 5.0, 1.0, step=0.5)
+        filter_strength = st.sidebar.slider(
+            "Gaussian Sigma", 0.5, 5.0, 1.0, step=0.5,
+            help="Controls the standard deviation of the Gaussian blur. Higher values create a stronger blur effect."
+        )
 
     img = load_image(uploaded_file, image_choice if not use_uploaded else None)
     if img is not None:
