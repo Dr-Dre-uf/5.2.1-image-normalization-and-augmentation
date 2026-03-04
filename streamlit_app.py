@@ -14,7 +14,7 @@ st.sidebar.title("Image Processing Suite")
 
 # Data Privacy Warning
 st.sidebar.warning(
-    "⚠️ **Privacy Notice:**\n\n"
+    "**Privacy Notice:**\n\n"
     "This is an educational sandbox. Please **do not upload sensitive clinical data**, "
     "personally identifiable information (PII), or Protected Health Information (PHI)."
 )
@@ -76,7 +76,7 @@ if app_mode == "Image Processing & Augmentation":
     st.title("Image Processing & Augmentation")
     st.info("**Instructions:** Adjust the sliders to scale pixel intensities (normalization) or apply spatial transformations (augmentation).")
 
-    with st.expander("💡 What to Expect (Click to reveal)"):
+    with st.expander("What to Expect (Click to reveal)"):
         st.write(
             "**Normalization:** Lowering the factor will uniformly darken the image. In real model training, standardizing all images to a [0, 1] range ensures stable neural network gradients.\n\n"
             "**Augmentation:** Flipping and rotating the image changes its orientation without altering the underlying cellular features. This forces machine learning models to learn the actual shape of the cells rather than memorizing their position on the slide."
@@ -112,12 +112,11 @@ elif app_mode == "Edge Detection":
     st.title("Edge Detection with Filters")
     st.info("**Instructions:** Apply spatial filters to extract structural features like cell walls.")
 
-    with st.expander("💡 What to Expect (Click to reveal)"):
+    with st.expander("What to Expect (Click to reveal)"):
         st.write(
             "**Directional Edges:** The horizontal filter will highlight the top and bottom boundaries of the cells, while the vertical filter will highlight the left and right boundaries.\n\n"
             "**Magnitude & Sobel:** These combine the horizontal and vertical gradients into a single image, creating a bright, continuous outline around the cellular structures. This is a critical first step for automated cell counting or segmentation algorithms."
         )
-        # Contextual image to illustrate what ideal edge detection looks like on cells
         st.write("")
 
     st.sidebar.header("Filter Settings")
@@ -159,7 +158,7 @@ elif app_mode == "Motion Blur Simulation":
     st.title("Motion Blur Simulation")
     st.info("**Instructions:** Use this tool to simulate imaging artifacts caused by camera shake or stage movement.")
 
-    with st.expander("💡 What to Expect (Click to reveal)"):
+    with st.expander("What to Expect (Click to reveal)"):
         st.write(
             "You should expect the image to look 'smeared'. Increasing the **Blur Length** makes the smear stretch further, simulating a faster or longer physical movement during image capture. "
             "Changing the **Blur Angle** will alter the exact trajectory (e.g., diagonal, horizontal, or vertical) of that smear."
@@ -188,7 +187,7 @@ elif app_mode == "Salt & Pepper Noise & Denoising":
     st.title("Salt & Pepper Noise and Denoising")
     st.info("**Instructions:** Introduce random sensor noise and attempt to clean it up using different filtering algorithms.")
 
-    with st.expander("💡 What to Expect (Click to reveal)"):
+    with st.expander("What to Expect (Click to reveal)"):
         st.write(
             "**The Noise:** You will see random pure black and pure white pixels scattered across the image, common in faulty imaging sensors.\n\n"
             "**The Fix:** You should expect the **Median filter** to clean this up beautifully, as it replaces the extreme noise pixels with the middle value of their neighbors, keeping the cell edges sharp. "
